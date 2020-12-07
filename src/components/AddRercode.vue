@@ -9,11 +9,11 @@
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="条码最小值" prop="minBarCode">
             <el-input type="text" v-model="ruleForm.minBarCode" maxlength="15"></el-input>
-            <!--            <a @click="sao"><i class="el-icon-full-screen"> 扫一扫</i></a>-->
+                        <a @click="minSao"><i class="el-icon-full-screen"> 扫一扫</i></a>
           </el-form-item>
           <el-form-item label="条码最大值" prop="maxBarCode">
             <el-input type="text" v-model="ruleForm.maxBarCode" maxlength="15"></el-input>
-            <!--            <el-button @click="sao">扫一扫</el-button>-->
+<!--                        <el-button @click="sao">扫一扫</el-button>-->
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -123,6 +123,7 @@
             {validator: validateMax, trigger: 'blur'}
           ],
         },
+        saomaResult:null,
       };
     }
     ,
@@ -204,32 +205,22 @@
         }
       }
       ,
-      // sao(){
-      //   alert("扫一扫！")
-      //   this.$weixin.config({
-      //     debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-      //     appId: '', // 必填，公众号的唯一标识
-      //     timestamp: '', // 必填，生成签名的时间戳
-      //     nonceStr: '', // 必填，生成签名的随机串
-      //     signature: '',// 必填，签名
-      //     jsApiList: ['scanQRCode'] // 必填，需要使用的JS接口列表
-      //   });
-      //   console.log("调用扫一扫接口")
-      //   this.$weixin.scanQRCode({
-      //     desc: 'scanQRCode desc',
-      //     needResult: 0, // 默认为0，扫描结果由企业微信处理，1则直接返回扫描结果，
-      //     scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是条形码（一维码），默认二者都有
-      //     success: function(res) {
-      //       console.log("扫码成功")
-      //       // 回调
-      //     },
-      //     error: function(res) {
-      //       if (res.errMsg.indexOf('function_not_exist') > 0) {
-      //         alert('版本过低请升级')
-      //       }
-      //     }
-      //   });
-      // }
+      minSao(){
+        console.log("调用扫一扫接口")
+        this.wx.scanQRCode({
+          desc: 'scanQRCode desc',
+          needResult: 1, // 默认为0，扫描结果由企业微信处理，1则直接返回扫描结果，
+          scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是条形码（一维码），默认二者都有
+          success: function(res) {
+            console.log("扫码成功" + res)
+          },
+          error: function(res) {
+            if (res.errMsg.indexOf('function_not_exist') > 0) {
+              alert('版本过低请升级')
+            }
+          }
+        });
+      }
     }
   }
 </script>
