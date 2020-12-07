@@ -10,6 +10,7 @@
           <el-form-item label="条码最小值" prop="minBarCode">
             <el-input type="text" v-model="ruleForm.minBarCode" maxlength="15"></el-input>
                         <a @click="minSao"><i class="el-icon-full-screen"> 扫一扫</i></a>
+            <p>扫码结果：{{saomaResult}}</p>
           </el-form-item>
           <el-form-item label="条码最大值" prop="maxBarCode">
             <el-input type="text" v-model="ruleForm.maxBarCode" maxlength="15"></el-input>
@@ -212,6 +213,7 @@
           needResult: 1, // 默认为0，扫描结果由企业微信处理，1则直接返回扫描结果，
           scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是条形码（一维码），默认二者都有
           success: function(res) {
+            this.saomaResult = res
             console.log("扫码成功" + res)
           },
           error: function(res) {
