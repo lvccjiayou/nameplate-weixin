@@ -9,7 +9,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.config.productionTip = false
 Vue.prototype.ajaxVue = axios
-Vue.prototype.requestUrl ='http://weixin.landa.com.cn:9001/nameplatesystem'
+// Vue.prototype.requestUrl ='http://weixin.landa.com.cn:9001/nameplatesystem'
+Vue.prototype.requestUrl ='http://localhost:8080'
 Vue.use(element)
 
 /* eslint-disable no-new */
