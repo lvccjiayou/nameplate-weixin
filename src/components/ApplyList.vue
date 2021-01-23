@@ -1,72 +1,71 @@
 <template>
   <div id="ExaminationList">
-    <h3>更新使用记录</h3>
-    <el-container>
-      <el-header id="search">
-        <el-form :inline="true" :model="searchForm" class="demo-form-inline" size="mini">
-          <el-form-item label="打印日期">
-            <el-date-picker type="date" placeholder="选择日期" v-model="searchForm.displaydate"
-                            style="width: 100%;"></el-date-picker>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="onSubmit">查 询</el-button>
-          </el-form-item>
-        </el-form>
-      </el-header>
-      <el-header id="button">
-        <el-button id="fanhui" icon="el-icon-arrow-left" type="primary" size="mini" @click="fanhui">返 回</el-button>
-        <!--        <el-button id="excel" type="primary" size="mini">导出记录</el-button>-->
-      </el-header>
-      <el-main id="content">
-        <template>
-          <el-table :data="tableData" style="width: 100%;font-size: 13px" border size="mini"
-                    v-loading="loading"
-                    element-loading-text="拼命加载中">
-            <el-table-column prop="displayDate" label="打印日期"></el-table-column>
-            <el-table-column prop="minBarCode" label="条码最小值"></el-table-column>
-            <el-table-column prop="maxBarCode" label="条码最大值"></el-table-column>
-            <el-table-column prop="codeNum" label="打印条码数量"></el-table-column>
-            <!--            <el-table-column prop="unitCode" label="单元码"></el-table-column>-->
-            <!--            <el-table-column prop="lineType" label="线别"></el-table-column>-->
-            <!--            <el-table-column prop="printOrNot" label="历史是否打印"></el-table-column>-->
-            <!--            <el-table-column prop="model" label="型号"></el-table-column>-->
-            <!--            <el-table-column prop="customerCode" label="客户代码"></el-table-column>-->
-            <!--            <el-table-column prop="statusSp" label="状态"></el-table-column>-->
-            <el-table-column prop="" label="操作" fixed="right">
-              <template slot-scope="scope">
-                <a href="javascript:" @click="openPrint(scope.$index, scope.row)" v-if="scope.row.statusSp !== '已使用'">
-                  <i class="el-icon-check" style="color: deepskyblue">更新</i></a>
-                <p v-else>已使用</p>
-              </template>
-            </el-table-column>
-          </el-table>
-        </template>
-      </el-main>
-      <el-footer id="footer">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="page.currentPage"
-          :page-sizes="page.pageSizes"
-          :page-size="page.pageSize"
-          layout="sizes, prev, pager, next"
-          :total="page.total">
-        </el-pagination>
-      </el-footer>
-      <el-dialog title="条码信息" :visible.sync="showPopup" border width="80%">
-        打印日期: <p>{{rowList.displayDate}}</p>
-        最小一维码: <p>{{rowList.minBarCode}}</p>
-        最大一维码: <p>{{rowList.maxBarCode}}</p>
-        打印张数: <p>{{rowList.codeNum}}</p>
-        单元码: <p>{{rowList.unitCode}}</p>
-        线别: <p>{{rowList.lineType}}</p>
-        <!--      历史是否打印: <span>{{rowList.printOrNot}}</span>-->
-        型号: <p>{{rowList.model}}</p>
-        客户代码: <p>{{rowList.customerCode}}</p>
-        当前状态: <p>{{rowList.statusSp}}</p><br>
-        <el-button type="primary" @click="rowDisplay" size="mini">使 用</el-button>
-      </el-dialog>
-    </el-container>
+    <h3 style="margin: 0 0 20px 0">条码打印记录</h3>
+    <el-main id="content">
+      <template>
+        <el-table :data="tableData" style="width: 100%;font-size: 13px" border size="mini"
+                  v-loading="loading" stripe height="560px"
+                  element-loading-text="拼命加载中">
+          <el-table-column prop="displayDate" label="打印日期"></el-table-column>
+          <el-table-column prop="minBarCode" label="条码最小值"></el-table-column>
+          <el-table-column prop="maxBarCode" label="条码最大值"></el-table-column>
+          <el-table-column prop="codeNum" label="打印条码数量"></el-table-column>
+          <el-table-column prop="unitCode" label="单元码"></el-table-column>
+          <el-table-column prop="customerCode" label="客户代码"></el-table-column>
+          <el-table-column prop="printOrNot" label="历史是否打印"></el-table-column>
+          <el-table-column prop="" label="状态" fixed="right">
+            <template slot-scope="scope">
+              <a href="javascript:" @click="openPrint(scope.$index, scope.row)" v-if="scope.row.statusSp !== '已使用'">
+                <i class="el-icon-check" style="color: deepskyblue">使用</i></a>
+              <p v-else>已使用</p>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </el-main>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="page.currentPage"
+      :page-size="page.pageSize"
+      layout="prev, pager, next"
+      :total="page.total">
+    </el-pagination>
+    <el-dialog title="条码登记信息" :visible.sync="showPopup" border width="90%" top="5vh">
+      <!--        <el-form :model="sprForm" status-icon ref="sprForm" label-width="100px" class="demo-ruleForm">-->
+      <van-field readonly v-model="rowList.displayDate" type="text" label="打印日期" placeholder="请输入"/>
+      <van-field readonly v-model="rowList.minBarCode" type="text" label="最小条码" placeholder="请输入"/>
+      <van-field readonly v-model="rowList.maxBarCode" type="text" label="最大条码" placeholder="请输入"/>
+      <van-field readonly v-model="rowList.codeNum" type="text" label="打印张数" placeholder="请输入"/>
+      <van-field readonly v-model="rowList.unitCode" type="text" label="单元码" placeholder="请输入"/>
+      <van-field readonly v-model="rowList.lineType" type="text" label="线别" placeholder="请输入"/>
+      <van-field readonly v-model="rowList.model" type="text" label="型号" placeholder="请输入"/>
+      <van-field readonly v-model="rowList.customerCode" type="text" label="客户代码" placeholder="请输入"/>
+      <van-field readonly v-model="rowList.printOrNot" type="text" label="历史是否打印" placeholder="请输入"/>
+      <van-field readonly v-model="rowList.statusSp" type="text" label="当前条码状态" placeholder="请输入"/>
+      <!--          <el-form-item label="审批人" prop="spr">-->
+      <!--            <el-select v-model="sprForm.spr" placeholder="审批人">-->
+      <!--              <el-option label="周" value="周"></el-option>-->
+      <!--              <el-option label="王" value="王"></el-option>-->
+      <!--              <el-option label="李" value="李"></el-option>-->
+      <!--            </el-select>-->
+      <!--          </el-form-item>-->
+      <van-button type="primary" @click="rowDisplay">提 交</van-button>
+      <!--        </el-form>-->
+    </el-dialog>
+<!--    <el-dialog title="条码信息" :visible.sync="showPopup" border width="80%">-->
+<!--      打印日期: <p>{{rowList.displayDate}}</p>-->
+<!--      最小一维码: <p>{{rowList.minBarCode}}</p>-->
+<!--      最大一维码: <p>{{rowList.maxBarCode}}</p>-->
+<!--      打印张数: <p>{{rowList.codeNum}}</p>-->
+<!--      单元码: <p>{{rowList.unitCode}}</p>-->
+<!--      线别: <p>{{rowList.lineType}}</p>-->
+<!--      &lt;!&ndash;      历史是否打印: <span>{{rowList.printOrNot}}</span>&ndash;&gt;-->
+<!--      型号: <p>{{rowList.model}}</p>-->
+<!--      客户代码: <p>{{rowList.customerCode}}</p>-->
+<!--      当前状态: <p>{{rowList.statusSp}}</p><br>-->
+<!--      <el-button type="primary" @click="rowDisplay" size="mini">使 用</el-button>-->
+<!--    </el-dialog>-->
   </div>
 </template>
 
@@ -103,16 +102,10 @@
           customerCode: '',
           spr: '',
         },
-        searchForm: {
-          displaydate: '',
-          // printornot: '',
-          statusSp: ''
-        },
         page: {
           currentPage: 1,
           total: null,
-          pageSizes: ['10', '20', '30'],
-          pageSize: 10,
+          pageSize: 6,
         }
       }
     },
@@ -121,9 +114,6 @@
       this.ajaxVue
         .get(this.requestUrl + '/nameplate/getApplyRecord', {
           params: {
-            displaydate: this.searchForm.displaydate,
-            // printornot: this.searchForm.printornot,
-            statusSp: this.searchForm.statusSp,
             currentPage: this.page.currentPage,
             pageSize: this.page.pageSize,
           }
@@ -156,13 +146,11 @@
         this.onSubmit();
       },
       onSubmit() {
+        this.loading = true
         let result = null;
         this.ajaxVue
           .get(this.requestUrl + '/nameplate/getApplyRecord', {
             params: {
-              displaydate: this.searchForm.displaydate,
-              // printornot: this.searchForm.printornot,
-              statusSp: this.searchForm.statusSp,
               currentPage: this.page.currentPage,
               pageSize: this.page.pageSize,
             }
@@ -179,7 +167,8 @@
                   })
                 }
               }),
-              this.page.total = this.resultResponse.total
+              this.page.total = this.resultResponse.total,
+              this.loading = false
           ))
           .catch(function (error) {
             console.log(error);
@@ -191,7 +180,7 @@
       },
       rowDisplay() {
         console.log(this.rowList)
-        if (this.rowList !== null ) {
+        if (this.rowList !== null) {
           this.ajaxVue
             .get(this.requestUrl + '/nameplate/updateRecord', {
               params: {
@@ -218,66 +207,25 @@
           alert("该申请待审批或被驳回，无法打印!")
         }
       },
-      fanhui() {
-        this.$router.push('/layout')
-      },
     }
   }
 </script>
 
 <style scoped>
   #ExaminationList {
-    margin: 10px 10px 0 10px;
-    padding: 0;
-  }
-
-  .el-header {
-    text-align: left;
-    height: auto;
-    padding: 0;
-  }
-
-  #excel {
-    margin: 15px 20px 0 0;
-    float: left;
-  }
-
-  #fanhui {
-    margin: 15px 20px 0 0;
-    float: left;
-  }
-
-  #button {
-    text-align: left;
-    background: #ffffff;
-    border-top: #9ba5af solid 1px;
-    border-bottom: #9ba5af solid 1px;
+    padding: 5px 0 0 0;
+    width: 100%;
+    height: 740px;
+    background-color: #B3C0D1;
   }
 
   #content {
     background: #B3C0D1;
     text-align: left;
-    padding: 5px;
-  }
-
-  .el-form-item {
-    margin: 0;
-    line-height: 25px;
-  }
-
-  #footer {
-    margin: 0 auto;
-  }
-
-  .el-pagination {
-    line-height: 30px;
+    padding: 2px;
   }
 
   p {
     color: red;
   }
-
-  /*.el-pager {*/
-  /*  line-height: 30px;*/
-  /*}*/
 </style>

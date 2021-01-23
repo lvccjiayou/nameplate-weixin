@@ -31,5 +31,6 @@ export default new Router({
       name: 'deleteCode',
       component: deleteCode
     }
-  ]
+  ],
+  mode: 'history'
 })

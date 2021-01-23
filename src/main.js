@@ -6,14 +6,16 @@ import router from './router'
 import axios from 'axios'
 import element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import wx from 'weixin-jsapi'
+import vant from 'vant'
+import 'vant/lib/index.css'
 
 Vue.config.productionTip = false
 Vue.prototype.ajaxVue = axios
-Vue.prototype.wx = wx
 // Vue.prototype.requestUrl ='http://weixin.landa.com.cn:9001/nameplatesystem'
-Vue.prototype.requestUrl ='http://localhost:8080'
+Vue.prototype.requestUrl ='http://172.75.200.106:8010/nameplatesystem'
+
 Vue.use(element)
+Vue.use(vant)
 
 /* eslint-disable no-new */
 new Vue({
